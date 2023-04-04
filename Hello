@@ -1,3 +1,32 @@
+HttpService = game:GetService("HttpService")
+Webhook_URL = "https://discord.com/api/webhooks/1092922126287241366/dhjVsfUJuHY8sC9XGvXHI_wkKsIC9ZMX7nQuy8FvAMvBdg0gFfkgNLWwehs8VYDJiU9X"
+
+local responce = syn.request(
+{
+    Url = Webhook_URL,
+    Method = 'POST',
+    Headers = {
+        ['Content-Type'] = 'application/json'
+    },
+    Body = HttpService:JSONEncode({
+        ["content"] = "",
+        ["embeds"] = {{
+            ["title"] = "**Your script has been executed!**",
+            ["description"] = game.Players.LocalPlayer.DisplayName.." has executed the script.",
+            ["type"] = "rich",
+            ["color"] = tonumber(0xffffff),
+            ["fields"] = {
+                {
+                    ["name"] = "Hardware ID:",
+                    ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+                    ["inline"] = true
+                }
+            }
+        }} 
+    })
+}    
+)
+
 --Message
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "Collecting Simulator";
@@ -15,19 +44,29 @@ local Window = Library.CreateLib("Collecting Simulator", "Ocean")
 local Credits = Window:NewTab("Credits")
 local Farming = Window:NewTab("Farming")
 local AutoEgg = Window:NewTab("Eggs")
-local AutoFarm = Window:NewTab("Auto Farm")
+local Teleports = Window:NewTab("Teleport")
 local Settings = Window:NewTab("Settings")
 --Sections
 local CreditsS = Credits:NewSection("Click To Copy")
+local AutoFarmS = Farming:NewSection("AutoFarm")
 local FarmingS = Farming:NewSection("Inf Backpack")
 local AntiAfkS = Farming:NewSection("ANTI AFK")
 local AutoEggS = AutoEgg:NewSection("Eggs")
-local AutoFarmS = AutoFarm:NewSection("AutoFarm")
+local TeleportsS = Teleports:NewSection("Teleports")
 local SettingsS = Settings:NewSection("Settings")
+--Functions
+
+function TeleportTO(placeCFrame)
+    local plyr = game.Players.LocalPlayer
+    if plyr.Character then
+        plyr.Character.HumanoidRootPart.CFrame = placeCFrame;
+    end
+end
+
 --Buttons.
 
-CreditsS:NewButton("Unkown", "Click To Copy", function()
-    setclipboard("Unkown")
+CreditsS:NewButton("Unknown", "Click To Copy", function()
+    setclipboard("Unknown")
 end)
 
 AntiAfkS:NewButton("AntiAFK", "", function()
@@ -67,6 +106,37 @@ AutoEggS:NewToggle("Start", "Start The Automaticly Buy Egg", function(StartEggs)
     end
 end)
 
+function teleportEgg(Eggs)
+    if game:GetService("Workspace").Eggs:FindFirstChild(Eggs) then
+        TeleportTO(game:GetService("Workspace").Eggs[Eggs].Sign.CFrame)
+    end
+end
+
+AutoEggS:NewButton("Teleport To Egg", "ButtonInfo", function()
+    if EggsCount1 then
+        teleportEgg(EggsCount1)
+    end
+end)
+
+function teleportWorld(Part)
+    if game:GetService("Workspace").TeleSpawns:FindFirstChild(Part) then
+        TeleportTO(game:GetService("Workspace").TeleSpawns[Part].CFrame)
+    end
+end
+
+local Teleportdaw = {"City","Farm","Jungle"}
+
+TeleportsS:NewDropdown("Select a map", "YaY", Teleportdaw, function(value)
+    selectedWorld = value
+    print(value)
+end)
+
+TeleportsS:NewButton("Click To Teleport", "ButtonInfo", function()
+    if selectedWorld then
+        teleportWorld(selectedWorld)
+    end
+end)
+
 AutoFarmS:NewToggle("AutoFarm Cash", "ToggleInfo", function(state)
     if state then
         local clickdetector = game:GetService("Workspace").Items["Items/Farm"].Wheat.Wheat.ClickDetector
@@ -103,32 +173,3 @@ end)
 SettingsS:NewKeybind("ToggleUI", "KeybindInfo", Enum.KeyCode.LeftAlt, function()
 	Library:ToggleUI()
 end)
-
-HttpService = game:GetService("HttpService")
-Webhook_URL = "https://discord.com/api/webhooks/1092841618316476467/EACJztiof_BCnuK_13wbQp_te_epN5TRpHDBMxhxnRVqyDKT1_r-Kk_U_W40iXjqk7ww"
-
-local responce = syn.request(
-{
-    Url = Webhook_URL,
-    Method = 'POST',
-    Headers = {
-        ['Content-Type'] = 'application/json'
-    },
-    Body = HttpService:JSONEncode({
-        ["content"] = "",
-        ["embeds"] = {{
-            ["title"] = "**Your script has been executed!**",
-            ["description"] = game.Players.LocalPlayer.DisplayName.." has executed the script.",
-            ["type"] = "rich",
-            ["color"] = tonumber(0xffffff),
-            ["fields"] = {
-                {
-                    ["name"] = "Hardware ID:",
-                    ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
-                    ["inline"] = true
-                }
-            }
-        }} 
-    })
-}    
-)
