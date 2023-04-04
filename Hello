@@ -20,6 +20,7 @@ local Settings = Window:NewTab("Settings")
 --Sections
 local CreditsS = Credits:NewSection("Click To Copy")
 local FarmingS = Farming:NewSection("Inf Backpack")
+local AntiAfkS = Farming:NewSection("ANTI AFK")
 local AutoEggS = AutoEgg:NewSection("Eggs")
 local AutoFarmS = AutoFarm:NewSection("AutoFarm")
 local SettingsS = Settings:NewSection("Settings")
@@ -27,6 +28,15 @@ local SettingsS = Settings:NewSection("Settings")
 
 CreditsS:NewButton("Unkown", "Click To Copy", function()
     setclipboard("Unkown")
+end)
+
+AntiAfkS:NewButton("AntiAFK", "", function()
+    local vu = game:GetService("VirtualUser")
+    game:GetService("Players").LocalPlayer.Idled:connect(function()
+        vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+        wait(1)
+        vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+    end)
 end)
 
 FarmingS:NewButton("Click", "", function()
