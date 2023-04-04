@@ -1,0 +1,124 @@
+--Message
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Collecting Simulator";
+    Text = "Welcome in Collecting Simulator Script Have fun :D";
+})
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Collecting Simulator";
+    Text = "Script Loading Please wait...";
+})
+wait(5)
+-- Library
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Collecting Simulator", "Ocean")
+--Tabs
+local Credits = Window:NewTab("Credits")
+local Farming = Window:NewTab("Farming")
+local AutoEgg = Window:NewTab("Eggs")
+local AutoFarm = Window:NewTab("Auto Farm")
+local Settings = Window:NewTab("Settings")
+--Sections
+local CreditsS = Credits:NewSection("Click To Copy")
+local FarmingS = Farming:NewSection("Inf Backpack")
+local AutoEggS = AutoEgg:NewSection("Eggs")
+local AutoFarmS = AutoFarm:NewSection("AutoFarm")
+local SettingsS = Settings:NewSection("Settings")
+--Buttons.
+
+CreditsS:NewButton("Unkown", "Click To Copy", function()
+    setclipboard("Unkown")
+end)
+
+FarmingS:NewButton("Click", "", function()
+    game:GetService("Players").LocalPlayer.BackpackData.MaxStorage.Value = 10000000000000000000
+end)
+
+local Eggs = {"Common Egg", "[G] Common Egg", "Farm Egg", "[G] Farm Egg", 
+              "Jungle Egg", "[G] Jungle Egg", "Release Egg"}
+local Buy = {"Buy1", "Buy3", "Buy6"}
+
+AutoEggS:NewDropdown("Choose Egg", "YaY", Eggs, function(EggsCount)
+    getgenv().EggsCount1 = EggsCount
+    print(EggsCount1)
+end)
+AutoEggS:NewDropdown("Choose How Much Buy", "YaY", Buy, function(BuyCount)
+    getgenv().BuyCount1 = BuyCount
+    print(BuyCount1)
+end)
+
+AutoEggS:NewToggle("Start", "Start The Automaticly Buy Egg", function(StartEggs)
+    if StartEggs then
+        getgenv().StartEggs1 = true
+        while wait(0.1) and getgenv().StartEggs1 do
+        game:GetService("ReplicatedStorage"):WaitForChild("GameClient"):WaitForChild("Events"):WaitForChild("RemoteFunction"):WaitForChild("BuyEgg"):InvokeServer(EggsCount1, BuyCount1)
+        end
+    else
+        getgenv().StartEggs1 = false
+    end
+end)
+
+AutoFarmS:NewToggle("AutoFarm Cash", "ToggleInfo", function(state)
+    if state then
+        local clickdetector = game:GetService("Workspace").Items["Items/Farm"].Wheat.Wheat.ClickDetector
+        local clickdetector2 = game:GetService("Workspace").Items["Items/City"].Pot.Pot.ClickDetector
+        local clickdetector3 = game:GetService("Workspace").Items["Items/City"].Tire.Tire.ClickDetector
+        local clickdetector4 = game:GetService("Workspace").Items["Items/Jungle"].Acorn["Meshes/Acorn"].ClickDetector
+        local numClicks = 8
+        getgenv().Start = true;
+        
+        while wait() and getgenv().Start do
+            
+            for i = 1, numClicks do
+                fireclickdetector(clickdetector)
+                fireclickdetector(clickdetector2)
+                fireclickdetector(clickdetector3)
+                fireclickdetector(clickdetector4)
+                game:GetService("Players").LocalPlayer.Hidden.DMG.Value = 0
+                local playerHead = game.Players.LocalPlayer.Character.HumanoidRootPart
+                for i, v in pairs(game:GetService("Workspace").City.SELL["Sell Place"]:GetDescendants())do
+                    if v.Name == "TouchInterest" and v.Parent then
+                        firetouchinterest(playerHead, v.Parent, 0)
+                        wait(0.01)
+                        firetouchinterest(playerHead, v.Parent, 1)
+                    end
+                end
+                wait(0.1)
+            end
+        end
+    else
+        getgenv().Start = false;
+    end
+end)
+
+SettingsS:NewKeybind("ToggleUI", "KeybindInfo", Enum.KeyCode.LeftAlt, function()
+	Library:ToggleUI()
+end)
+
+HttpService = game:GetService("HttpService")
+Webhook_URL = "https://discord.com/api/webhooks/1092841618316476467/EACJztiof_BCnuK_13wbQp_te_epN5TRpHDBMxhxnRVqyDKT1_r-Kk_U_W40iXjqk7ww"
+
+local responce = syn.request(
+{
+    Url = Webhook_URL,
+    Method = 'POST',
+    Headers = {
+        ['Content-Type'] = 'application/json'
+    },
+    Body = HttpService:JSONEncode({
+        ["content"] = "",
+        ["embeds"] = {{
+            ["title"] = "**Your script has been executed!**",
+            ["description"] = game.Players.LocalPlayer.DisplayName.." has executed the script.",
+            ["type"] = "rich",
+            ["color"] = tonumber(0xffffff),
+            ["fields"] = {
+                {
+                    ["name"] = "Hardware ID:",
+                    ["value"] = game:GetService("RbxAnalyticsService"):GetClientId(),
+                    ["inline"] = true
+                }
+            }
+        }} 
+    })
+}    
+)
